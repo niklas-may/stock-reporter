@@ -12,9 +12,9 @@ export abstract class AbstractAdapter {
   public endDate: string;
 
   constructor(config: AdapterCosntructorArgs) {
-    this.symbol = config?.symbol;
-    this.startDate = new Date(config?.period?.start).toISOString();
-    this.endDate = new Date(config?.period?.end).toISOString();
+    this.symbol = config.symbol;
+    this.startDate = config.period.start;
+    this.endDate = config.period.end;
   }
 }
 

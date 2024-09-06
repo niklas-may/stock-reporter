@@ -13,6 +13,9 @@ export function defineConfig(userConfig: Config, options?: Options): { config: C
     throw new Error("Ooops, something was wraong with you input.", { cause: error });
   }
 
+  data.start = new Date(data.start).toISOString();
+  data.end = new Date(data.end).toISOString();
+
   return { config: data, options: options || {} };
 }
 
