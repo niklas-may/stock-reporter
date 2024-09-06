@@ -1,17 +1,17 @@
-# Stock Cli
+# Stock Reporter 
 
-Features
-- CLI Flags
-- Typed Config Object
-- Yahoo finance API Key
-- Twillo SMS
-- Write To File
-- Multiple Stocks
+## Word of caution
+The results might not be accurate. I need to find a surce for validation.
 
+## Installation
+```
+$ pnpm install
+```
 
-Philosophy
-- DX
-- Config
-- Strategies
+## Usage
+Add .env file base on `./.env.example`.
 
+```
+$ pnpm cli --help
+```
 

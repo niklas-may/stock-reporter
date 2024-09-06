@@ -17,7 +17,7 @@ export class EmailWriter implements IWriter {
   constructor(public readonly email: string) {}
 
   setContent(content: StockReportResult) {
-    this.content = `Your stock report for "${content.symbol}":\nMax Drawdown: ${content.prettyMaxDrawdown}\nSimple Return: ${content.prettySimpleReturn}"`;
+    this.content = `Your Stock Report for "${content.symbol}" from ${new Date(content.startDate).toLocaleDateString()} to ${new Date(content.endDate).toLocaleDateString()}:\nMax Drawdown: ${content.prettyMaxDrawdown}\nSimple Return: ${content.prettySimpleReturn}"`;
   }
 
   async write() {

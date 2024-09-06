@@ -1,16 +1,15 @@
 #! /usr/bin/env node
 
-import { createConsola } from "consola";
 import { defineCommand, runMain } from "citty";
+import pkg from "../../package.json" assert { type: "json" };
 import { defineConfig } from "./config";
+import { logger } from "./logger";
 import { run } from "./app";
-
-const logger = createConsola({ formatOptions: { date: false } }).withTag("recap-stock-report");
 
 const main = defineCommand({
   meta: {
-    name: "recap-stock-report",
-    version: "0.0.1",
+    name: pkg.name,
+    version: pkg.version,
   },
   args: {
     symbol: {
@@ -40,7 +39,8 @@ const main = defineCommand({
     },
   },
   async run({ args }) {
-    logger.info("Welcome!");
+    logger.info("Generating stock report...");
+    
     try {
       const { config, options } = defineConfig(
         {
@@ -55,7 +55,17 @@ const main = defineCommand({
       );
 
       const result = await run(config, options);
-      logger.success("Report generated successfully", "\n", JSON.stringify(result, null, 2));
+
+      logger.box(
+        `${config.symbol}: simple return: ${result.prettySimpleReturn}, max drawdown: ${result.prettyMaxDrawdown}`
+      );
+
+      if (options?.out) {
+        logger.info(`Report saved to ${options.out}`);
+      }
+      if (options?.email) {
+        logger.info(`Report sent to ${options.email}`);
+      }
     } catch (e: any) {
       logger.error(e.message, e.cause);
     }

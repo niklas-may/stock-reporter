@@ -1,7 +1,9 @@
 {
-  "maxDrawdown": 0.024917666065991426,
-  "simpleReturn": -0.02672782874617737,
-  "prettyMaxDrawdown": "2.49%",
-  "prettySimpleReturn": "-2.67%",
-  "symbol": "AMZN"
+  "symbol": "AMZN",
+  "endDate": "2021-01-01T00:00:00.000Z",
+  "startDate": "2020-01-01T00:00:00.000Z",
+  "maxDrawdown": 0.2274444751635794,
+  "simpleReturn": 0.7370666666666666,
+  "prettyMaxDrawdown": "22.74%",
+  "prettySimpleReturn": "73.71%"
 }

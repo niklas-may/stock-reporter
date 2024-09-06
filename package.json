@@ -1,15 +1,17 @@
 {
-  "name": "recap-challenge",
-  "version": "1.0.0",
+  "name": "stock-reporter",
+  "version": "0.0.1",
   "description": "",
   "type": "module",
   "scripts": {
     "dev:test": "node --watch --loader ts-node/esm ./src/core/app.test.ts run",
-    "dev:cli": "node --loader ts-node/esm ./src/core/cli.ts run --symbol=AMZN --start=2021-01-01 --end=2021-01-10 --out=./playground --email=post@niklas-may.de"
+    "dev:cli": "node --loader ts-node/esm ./src/core/cli.ts run --symbol=AMZN --start=2021-01-01 --end=2022-01-01 --out=./playground --email=post@niklas-may.de",
+    "cli": "node --loader ts-node/esm ./src/core/cli.ts run"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "https://github.com/niklas-may",
+  "license": "MIT",
+  "packageManager": "pnpm@9.5.0",
   "devDependencies": {
     "@types/lodash": "^4.17.7",
     "@types/node": "^22.5.4",

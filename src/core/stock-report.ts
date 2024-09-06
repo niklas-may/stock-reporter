@@ -1,12 +1,15 @@
-import { AbstractAdapter, adapterValidator } from "./adapter";
 import axios from "axios";
 import isNull from "lodash/isNull";
+import { AbstractAdapter, adapterValidator } from "./adapter";
+import { logger } from "./logger";
 
 export interface StockReportResult {
   maxDrawdown: number;
   simpleReturn: number;
   prettyMaxDrawdown: string;
   prettySimpleReturn: string;
+  startDate: string;
+  endDate: string;
   symbol: string;
 }
 
@@ -19,27 +22,17 @@ export class StockReport {
     low: number | null;
   } = { lastClose: null, start: null, end: null, high: null, low: null };
 
-  private result: StockReportResult = {
-    maxDrawdown: 0,
-    simpleReturn: 0,
-    prettyMaxDrawdown: "",
-    prettySimpleReturn: "",
-    symbol: "",
-  };
+  constructor(public adapter: AbstractAdapter) {}
 
-  constructor(private config: AbstractAdapter) {
-    this.result.symbol = this.config.symbol;
-  }
-
-  async generate(): Promise<any> {
+  async generate(): Promise<StockReportResult> {
     return new Promise((resolve, reject) => {
       axios
-        .get(this.config.requestUrl.toString(), { ...this.config.requestConfig, responseType: "stream" })
+        .get(this.adapter.requestUrl.toString(), { ...this.adapter.requestConfig, responseType: "stream" })
         .then((res) => {
           const rawData = res.data;
 
           rawData
-            .pipe(this.config.csvParser)
+            .pipe(this.adapter.csvParser)
             .on("data", (inputData: any) => {
               this.onDataRow(inputData);
             })
@@ -58,7 +51,9 @@ export class StockReport {
     const { error, data } = adapterValidator.safeParse(rawData);
 
     if (error) {
-      throw new Error(error.message);
+      logger.error("Invalid csv row data shape:", error.message);
+      logger.log("Row data recieved:", rawData);
+      process.exit(1);
     }
 
     if (isNull(this.temp.start)) {
@@ -85,16 +80,26 @@ export class StockReport {
     this.temp.lastClose = data.adjClose;
   }
 
-  private onEnd() {
+  private onEnd(): StockReportResult {
     if (!this.temp.start || !this.temp.lastClose || !this.temp.low) throw new Error("Missing Data");
 
+    const result: StockReportResult = {
+      symbol: this.adapter.symbol,
+      endDate: this.adapter.endDate,
+      startDate: this.adapter.startDate,
+      maxDrawdown: 0,
+      simpleReturn: 0,
+      prettyMaxDrawdown: "",
+      prettySimpleReturn: "",
+    };
+
     this.temp.end = this.temp.lastClose;
-    this.result.simpleReturn = (this.temp.end - this.temp.start) / this.temp.start;
-    this.result.maxDrawdown = this.temp.low;
+    result.simpleReturn = (this.temp.end - this.temp.start) / this.temp.start;
+    result.maxDrawdown = this.temp.low;
 
-    this.result.prettySimpleReturn = `${(this.result.simpleReturn * 100).toFixed(2)}%`;
-    this.result.prettyMaxDrawdown = `${(this.result.maxDrawdown * 100).toFixed(2)}%`;
+    result.prettySimpleReturn = `${(result.simpleReturn * 100).toFixed(2)}%`;
+    result.prettyMaxDrawdown = `${(result.maxDrawdown * 100).toFixed(2)}%`;
 
-    return this.result;
+    return result;
   }
 }
