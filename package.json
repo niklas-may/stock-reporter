@@ -1,0 +1,28 @@
+{
+  "name": "recap-challenge",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev:test": "node --watch --loader ts-node/esm ./src/core/app.test.ts run",
+    "dev:cli": "node --loader ts-node/esm ./src/core/cli.ts run --symbol=AMZN --start=2021-01-01 --end=2021-01-10 --out=./playground --email=post@niklas-may.de"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^22.5.4",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "citty": "^0.1.6",
+    "consola": "^3.2.3",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "lodash": "^4.17.21",
+    "node-mailjet": "^6.0.6",
+    "zod": "^3.23.8"
+  }
+}
