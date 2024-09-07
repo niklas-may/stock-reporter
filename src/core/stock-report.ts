@@ -43,6 +43,9 @@ export class StockReport {
             .on("error", (e: any) => {
               reject(e);
             });
+        }).catch((e: any) => {
+          logger.error("Failed to fetch data from yahoo:", e.message);
+          process.exit(1);
         });
     });
   }
