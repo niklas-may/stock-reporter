@@ -14,17 +14,17 @@ const main = defineCommand({
   args: {
     symbol: {
       type: "string",
-      description: "Stock Symbold name, e.g. 'AAPL'",
+      description: "Stock Symbol name, e.g. 'AAPL'",
       required: true,
     },
     start: {
       type: "string",
-      description: "Start date as an ISO String, e.g. '2021-01-01'",
+      description: "Start date as an ISO string, e.g. '2021-01-01'",
       required: true,
     },
     end: {
       type: "string",
-      description: "End date as an ISO String, e.g. '2021-01-01'",
+      description: "End date as an ISO string, e.g. '2021-01-01'",
       required: true,
     },
     out: {
@@ -34,7 +34,7 @@ const main = defineCommand({
     },
     email: {
       type: "string",
-      description: "Email address to send the report to ",
+      description: "Email address to send the report to",
       required: false,
     },
   },

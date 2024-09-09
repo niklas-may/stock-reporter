@@ -11,7 +11,7 @@ $ pnpm install
 ```
 
 ## Usage
-Add .env file base on `./.env.example`.
+Add .env file based on `./.env.example`.
 
 ```
 $ pnpm cli --help
