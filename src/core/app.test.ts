@@ -12,8 +12,8 @@ async function main() {
 
 function mockInput() {
   return {
-    end: new Date(1640995200 * 1000).toISOString(),
-    start: new Date(1609459200 * 1000).toISOString(),
+    start: "2021-01-01",
+    end: "2022-01-01",
     symbol: "AAPL",
   };
 }
