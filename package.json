@@ -21,9 +21,9 @@
     "axios": "^1.7.7",
     "citty": "^0.1.6",
     "consola": "^3.2.3",
-    "csv-parser": "^3.0.0",
     "dotenv": "^16.4.5",
     "lodash": "^4.17.21",
+    "neat-csv": "^7.0.0",
     "node-mailjet": "^6.0.6",
     "zod": "^3.23.8"
   }

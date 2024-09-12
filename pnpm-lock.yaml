@@ -17,15 +17,15 @@ importers:
       consola:
         specifier: ^3.2.3
         version: 3.2.3
-      csv-parser:
-        specifier: ^3.0.0
-        version: 3.0.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      neat-csv:
+        specifier: ^7.0.0
+        version: 7.0.0
       node-mailjet:
         specifier: ^6.0.6
         version: 6.0.6
@@ -145,6 +145,10 @@ packages:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
 
+  get-stream@6.0.1:
+    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
+    engines: {node: '>=10'}
+
   json-bigint@1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
 
@@ -164,6 +168,10 @@ packages:
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
+  neat-csv@7.0.0:
+    resolution: {integrity: sha512-ZmiKZNkdqb6hrBU3lDHm52vWXs6CuFPfw6ZoJZNnY7IIpfA1fxM0UPPi+iQpqQo82qcLbsZPwLkQ1cdrMDtwwA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   node-mailjet@6.0.6:
     resolution: {integrity: sha512-cr8ciqtHuxyFd3+3bpDy+oKuNzctZfRQZtwRjurVAzE+DZLTfyxjgD+GTqQ1kr0ClAjDjSh3ERlZvd5MV0fKHg==}
@@ -294,6 +302,8 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
+  get-stream@6.0.1: {}
+
   json-bigint@1.0.0:
     dependencies:
       bignumber.js: 9.1.2
@@ -309,6 +319,11 @@ snapshots:
       mime-db: 1.52.0
 
   minimist@1.2.8: {}
+
+  neat-csv@7.0.0:
+    dependencies:
+      csv-parser: 3.0.0
+      get-stream: 6.0.1
 
   node-mailjet@6.0.6:
     dependencies:
