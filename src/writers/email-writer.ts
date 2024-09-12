@@ -1,42 +1,61 @@
-import { type IWriter } from "../core/writer";
-import { type StockReportResult } from "../core/stock-report";
+import type { Config } from "../core/config";
+import type { CreateWriter } from "../core/writer";
 
-import dotenv from "dotenv";
 import Mailjet from "node-mailjet";
+import { retry } from "../core/retry";
+import { type FullStockReport } from "../core/report";
 
-// TODO: Make .env available globally
-dotenv.config();
+export const createEmailWriter: CreateWriter = (report: FullStockReport, config: Config) => {
+  const { email } = config.output;
+  if (!email) return undefined;
 
-export class EmailWriter implements IWriter {
-  private content: any;
-  private client = new Mailjet.Client({
-    apiKey: process.env.MAILJET_API_KEY,
-    apiSecret: process.env.MAILJET_API_SECRET,
+  const { start, symbol, end } = config.stock;
+  const { prettyMaxDrawdown, prettySimpleReturn } = report;
+
+  const content = `Your Stock Report for "${symbol}" from ${start} to ${end}:\nMax Drawdown: ${prettyMaxDrawdown}\nSimple Return: ${prettySimpleReturn}"`;
+
+  const mailer = createMailer(email, content, config);
+  const errorHandler = createErrorHandler(email);
+
+  return () => retry(mailer, errorHandler);
+};
+
+function createMailer(email: string, content: string, config: Config) {
+  const client = new Mailjet.Client({
+    apiKey: config.env.MAILJET_API_KEY,
+    apiSecret: config.env.MAILJET_API_SECRET,
   });
 
-  constructor(public readonly email: string) {}
-
-  setContent(content: StockReportResult) {
-    this.content = `Your Stock Report for "${content.symbol}" from ${new Date(content.startDate).toLocaleDateString()} to ${new Date(content.endDate).toLocaleDateString()}:\nMax Drawdown: ${content.prettyMaxDrawdown}\nSimple Return: ${content.prettySimpleReturn}"`;
-  }
-
-  async write() {
-    const data = {
-      Messages: [
-        {
-          From: {
-            Email: "post@niklas-may.de",
-          },
-          To: [
-            {
-              Email: this.email,
-            },
-          ],
-          Subject: "Your Stock Report",
-          TextPart: this.content,
+  const data = {
+    Messages: [
+      {
+        From: {
+          Email: "post@niklas-may.de",
         },
-      ],
-    };
-    await this.client.post("send", { version: "v3.1" }).request(data);
-  }
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        Subject: "Your Stock Report",
+        TextPart: content,
+      },
+    ],
+  };
+  return () =>
+    client
+      .post("send", { version: "v3.1" })
+      .request(data)
+      .then(() => ({
+        status: "success" as const,
+        message: `Email sent to ${email}`,
+      }));
+}
+
+function createErrorHandler(email: string) {
+  return (e: any) => ({
+    status: "error" as const,
+    message: `Failed to send email to ${email}`,
+    details: e,
+  });
 }
