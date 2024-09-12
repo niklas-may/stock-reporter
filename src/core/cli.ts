@@ -2,7 +2,6 @@
 
 import { defineCommand, runMain } from "citty";
 import pkg from "../../package.json" assert { type: "json" };
-import { defineConfig } from "./config";
 import { logger } from "./logger";
 import { run } from "./app";
 
@@ -40,31 +39,30 @@ const main = defineCommand({
   },
   async run({ args }) {
     logger.info("Generating stock report...");
-    
-    try {
-      const { config, options } = defineConfig(
-        {
-          start: args.start,
-          end: args.end,
-          symbol: args.symbol,
-        },
-        {
-          out: args.out,
-          email: args.email,
-        }
-      );
 
-      const result = await run(config, options);
+    try {
+      const stockOptions = {
+        start: args.start,
+        end: args.end,
+        symbol: args.symbol,
+      };
+      const outputOptions = {
+        out: args.out,
+        email: args.email,
+      };
+
+      const { report, output } = await run(stockOptions, outputOptions);
 
       logger.box(
-        `${config.symbol}: simple return: ${result.prettySimpleReturn}, max drawdown: ${result.prettyMaxDrawdown}`
+        `${report.symbol}: simple return: ${report.prettySimpleReturn}, max drawdown: ${report.prettyMaxDrawdown}`
       );
 
-      if (options?.out) {
-        logger.info(`Report saved to ${options.out}`);
-      }
-      if (options?.email) {
-        logger.info(`Report sent to ${options.email}`);
+      for (const out of output) {
+        if (out.status === "success") {
+          logger.info(out.message);
+        } else {
+          logger.error(out.message, out.details);
+        }
       }
     } catch (e: any) {
       logger.error(e.message, e.cause);

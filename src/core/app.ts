@@ -1,30 +1,22 @@
-import { YahooAdapter } from "../adapters/yahoo-adapter";
-import { Config, Options } from "./config";
-import { StockReport, type StockReportResult } from "./stock-report";
-import { FileWriter } from "../writers/file-writer";
-import { IWriter } from "./writer";
-import { EmailWriter } from "../writers/email-writer";
+import { createConfig, OutputOptios, StockOptions } from "./config";
+import { createReport, decorateReport, type FullStockReport } from "./report";
+import { createFileWriter } from "../writers/file-writer";
+import { WriterReturn, type Writer } from "./writer";
+import { createEmailWriter } from "../writers/email-writer";
+import { loadCsv } from "./csv";
 
-export async function run({ start, end, symbol }: Config, options?: Options): Promise<StockReportResult> {
-  const adapter = new YahooAdapter({ symbol, period: { start, end } });
-  const report = new StockReport(adapter);
-  const result = await report.generate();
+export async function run(
+  stockOptions: StockOptions,
+  outputOptions: OutputOptios = {}
+): Promise<{ report: FullStockReport; output: WriterReturn[] }> {
+  
+  const config = createConfig(stockOptions, outputOptions);
+  const data = await loadCsv(config);
+  const simpleReport = createReport(data);
+  const report = decorateReport(simpleReport, config);
 
-  const wirters: IWriter[] = [];
+  const wirters: Writer[] = [createFileWriter(report, config), createEmailWriter(report, config)].filter((w) => !!w);
+  const output = await Promise.all(wirters.map((write) => write()));
 
-  if (options?.out) {
-    const writer = new FileWriter(options.out, adapter.symbol);
-    writer.setContent(result);
-    wirters.push(writer);
-  }
-
-  if (options?.email) {
-    const writer = new EmailWriter(options.email);
-    writer.setContent(result);
-    wirters.push(writer);
-  }
-
-  await Promise.all(wirters.map((writer) => writer.write()));
-
-  return result;
+  return { report, output };
 }
