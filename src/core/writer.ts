@@ -1,4 +1,5 @@
-import { Config } from "./config";
+import { type Config } from "./config";
+
 import { FullStockReport } from "./report";
 
 export type CreateWriter = (report: FullStockReport, config: Config) => Writer | undefined;

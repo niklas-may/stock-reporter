@@ -1,7 +1,7 @@
+import { type WriterReturn, type Writer } from "./writer";
 import { createConfig, OutputOptios, StockOptions } from "./config";
 import { createReport, decorateReport, type FullStockReport } from "./report";
 import { createFileWriter } from "../writers/file-writer";
-import { WriterReturn, type Writer } from "./writer";
 import { createEmailWriter } from "../writers/email-writer";
 import { loadCsv } from "./csv";
 

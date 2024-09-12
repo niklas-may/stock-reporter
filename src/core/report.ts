@@ -1,5 +1,6 @@
-import type { CsvRow } from "./csv";
-import type { Config } from "./config";
+import { type CsvRow } from "./csv";
+import { type Config } from "./config";
+
 import isNull from "lodash/isNull";
 import { logger } from "./logger";
 

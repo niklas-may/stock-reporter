@@ -1,8 +1,9 @@
+import { type Config } from "./config";
+
 import neatCsv from "neat-csv";
 import camelCase from "lodash/camelCase";
 import { retry } from "./retry";
 import { logger } from "./logger";
-import { Config } from "./config";
 
 export type CsvRow = {
   open: number;

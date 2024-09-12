@@ -1,8 +1,9 @@
-import { retry } from "../core/retry";
+import { type Config } from "../core/config";
 import { type CreateWriter } from "../core/writer";
+
+import { retry } from "../core/retry";
 import { promises } from "node:fs";
 import { FullStockReport } from "../core/report";
-import { type Config } from "../core/config";
 
 export const createFileWriter: CreateWriter = (report: FullStockReport, config: Config) => {
   const {
