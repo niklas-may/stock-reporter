@@ -1,13 +1,24 @@
 import { run } from "./app";
-import { defineConfig } from "./config";
+import { logger } from "./logger";
 
 main();
 
 async function main() {
-  const { start, end, symbol } = mockInput();
-  const { config } = defineConfig({ start, end, symbol });
+  const input = mockInput();
 
-  await run(config);
+  const { report, output } = await run(input, { out: "./playground" });
+
+  logger.box(
+    `${report.symbol}: simple return: ${report.prettySimpleReturn}, max drawdown: ${report.prettyMaxDrawdown}`
+  );
+
+  for (const out of output) {
+    if (out.status === "success") {
+      logger.info(out.message);
+    } else {
+      logger.error(out.message, out.details);
+    }
+  }
 }
 
 function mockInput() {

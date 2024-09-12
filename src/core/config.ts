@@ -1,27 +1,56 @@
 import { z } from "zod";
+import { logger } from "./logger";
+import dotenv from "dotenv";
 
-export type Config = z.infer<typeof configValidator>;
-export type Options = {
+export type Config = {
+  stock: StockOptions;
+  output: OutputOptios;
+  env: EnvVariables;
+};
+
+export type StockOptions = z.infer<typeof configValidator>;
+
+export type OutputOptios = {
   out?: string;
   email?: string;
 };
 
-export function defineConfig(userConfig: Config, options?: Options): { config: Config; options: Options } {
-  const { data, error } = configValidator.safeParse(userConfig);
+type EnvVariables = z.infer<typeof envValidator>;
 
-  if (error) {
-    throw new Error("Ooops, something was wraong with you input.", { cause: error });
+export function createConfig(userConfig: StockOptions, output: OutputOptios = {}): Config {
+  dotenv.config();
+
+  const parsedConfig = configValidator.safeParse(userConfig);
+  if (parsedConfig.error) {
+    logger.error("Invalid Config.", parsedConfig.error);
+    process.exit(1);
+  }
+  const stockOptions = {
+    ...parsedConfig.data,
+    start: new Date(parsedConfig.data.start).toISOString(),
+    end: new Date(parsedConfig.data.end).toISOString(),
+  };
+
+  const parsedEnv = envValidator.safeParse(process.env);
+  if (parsedEnv.error) {
+    logger.error("Invalid Env.", parsedEnv.error);
+    process.exit(1);
   }
 
-  data.start = new Date(data.start).toISOString();
-  data.end = new Date(data.end).toISOString();
-
-  return { config: data, options: options || {} };
+  return {
+    stock: stockOptions,
+    output: output,
+    env: parsedEnv.data,
+  };
 }
 
-// TODO: Check if this realy validates ISO date strings.
 const configValidator = z.object({
   start: z.string().date(),
   end: z.string().date(),
   symbol: z.string(),
+});
+
+const envValidator = z.object({
+  MAILJET_API_KEY: z.string(),
+  MAILJET_API_SECRET: z.string(),
 });
